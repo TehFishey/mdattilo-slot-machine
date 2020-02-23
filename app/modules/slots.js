@@ -22,7 +22,7 @@ module.exports = {
         output.result = [];
 
         console.log(`Rolling ${reelCount} reels between ${rollMin} and ${faceCount}`)
-        for (i = rollMin; i < reelCount; i++) {
+        for (i = 0; i < reelCount; i++) {
             output.result.push(Math.floor(Math.random() * (faceCount) + rollMin))
         }
         console.log(`Result: ${output.result}`)

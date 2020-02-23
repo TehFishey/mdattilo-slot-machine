@@ -1,7 +1,7 @@
 {
     "rouletteReels" : 3,
     "rouletteFaces" : 5,
-    "useWildcardFace" : true,
+    "useWildcardFace" : false,
 
     "minSmallWin" : 2,
     "minBigWin" : 3,

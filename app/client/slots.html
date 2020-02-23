@@ -47,7 +47,7 @@
             };
             for (i = 0; i < json.reelCount; i++) {
                 slotMap[i] = document.createElement('td');
-                slotMap[i].appendChild(slotImage(0));
+                slotMap[i].appendChild(slotImage(i+1));
                 reels.appendChild(slotMap[i]);
             };
         } catch(err) {
