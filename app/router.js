@@ -1,10 +1,8 @@
-const url = require('url');
 const fs = require('fs');
 const path = require('path');
 
 const public = path.resolve(__dirname, './client');
 const homePage = 'slots.html';
-const slotsModule = require('./modules/slots.js');
 
 const mime = {
     html: 'text/html',
@@ -12,12 +10,6 @@ const mime = {
     png: 'image/png',
     json: 'application/json'
 }
-
-//const reqUrl = url.parse(req.url, true);
-//const method = req.method;
-//const pathname = reqUrl.pathname;
-
-//console.log(`Request type: ${method} Endpoint: ${pathname}`)
 
 exports.getRequest = function(req, res) {
     let filePath = path.resolve(public + req.url);
@@ -49,27 +41,6 @@ exports.ajaxRequest = function(req, res) {
     console.log('Serving Ajax Response Object: ', json)
     res.end(JSON.stringify(json));
 }
-
-/*
-exports.postRequest = function(req, res) {
-    const chunks = [];
-    req.on('data', chunk => chunks.push(chunk));
-    req.on('end', () => {
-        const body = Buffer.concat(chunks);
-        let content = JSON.parse(body);
-
-        let type = content.type;
-        switch(type) {
-            case 'slotRequest':
-                let roll = slotsModule.roll()
-                res.writeHead(200, {'Content-Type': 'application/json'});
-                let json = { 'result': roll };
-                res.end(JSON.stringify(json));
-                break;
-        }
-    });
-}
-*/
 
 exports.invalidRequest = function(req, res) {
     console.log(`ERROR: 501 ${req.method}`)

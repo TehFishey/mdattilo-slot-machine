@@ -6,20 +6,18 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Hello World!</h1>
     <h2>
         <table>
             <tr id="reels"></tr>
         </table>
     </h2>
-    <button id="slot-btn">Slot Machine!</button>
-    <h3><img src="resources/button.png"></h3>
+    <h3><img id="slot-btn" alt="Play!" src="resources/button.png"></h3>
 </body>
 <script>
     const reels = document.getElementById("reels");
     const rollButton = document.getElementById('slot-btn');
     let slotMap = {};
-    let numbers = [0,0,0];
+    let imageMap = {};
     
     buildTemplate();
 
@@ -29,7 +27,8 @@
             const roll = await response.json();
             numbers = roll.result;
             for (i = 0; i < numbers.length; i++) {
-                slotMap[i].innerHTML = numbers[i];
+                slotMap[i].innerHTML = '';
+                slotMap[i].appendChild(slotImage(numbers[i]))
             }
         } catch(err) {
             console.error(`Error: ${err}`);
@@ -40,14 +39,27 @@
         try {
             const response = await fetch(window.location.href + '?template');
             const json = await response.json();
+            console.log(json.faceMappings.length);
+            for (i = 0; i < json.faceMappings.length; i++) {
+                imageMap[i] = json.faceMappings[i];
+                imageMap[i] = 'resources/' + json.resourcesDirectory + '/' + imageMap[i]
+                console.log(imageMap[i])
+            };
             for (i = 0; i < json.reelCount; i++) {
                 slotMap[i] = document.createElement('td');
-                slotMap[i].innerHTML = 0;
+                slotMap[i].appendChild(slotImage(0));
                 reels.appendChild(slotMap[i]);
-            }
+            };
         } catch(err) {
             console.error(`Error: ${err}`);
         }
+    };
+
+    function slotImage(index) {
+        img = document.createElement("IMG");
+        img.setAttribute("src", imageMap[index]);
+        img.setAttribute("alt", index);
+        return img;
     };
 </script>
 </html>

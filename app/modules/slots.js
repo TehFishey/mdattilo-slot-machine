@@ -1,5 +1,5 @@
 const config = require('../config/config.json');
-const skin = require('../skins/' + config.skin);
+const skin = require('../skins/' + config.slotsSkin);
 
 const reelCount = skin.rouletteReels;
 const faceCount = skin.rouletteFaces;
@@ -11,6 +11,8 @@ module.exports = {
         let output = {};
 
         output.reelCount = reelCount;
+        output.resourcesDirectory = skin.resourcesDirectory;
+        output.faceMappings = skin.faceMappings;
 
         return output;
     },
