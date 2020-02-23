@@ -1,19 +1,29 @@
 const config = require('../config/config.json');
 const skin = require('../skins/' + config.skin);
 
+const reelCount = skin.rouletteReels;
+const faceCount = skin.rouletteFaces;
+const rollMin = (skin.useWildcardFace === true) ? 0 : 1;
+
 module.exports = {
-    reelCount : skin.rouletteReels,
-    faceCount : skin.rouletteFaces,
-    rollMin : (skin.useWildcardFace === true) ? 0 : 1,
+
+    template : function() {
+        let output = {};
+
+        output.reelCount = reelCount;
+
+        return output;
+    },
 
     roll : function() {
-        let output = [];
-        
-        console.log(`Rolling ${this.reelCount} reels between ${this.rollMin} and ${this.faceCount}`)
-        for (i = this.rollMin; i < this.reelCount; i++) {
-            output.push(Math.floor(Math.random() * (this.faceCount) + this.rollMin))
+        let output = {};
+        output.result = [];
+
+        console.log(`Rolling ${reelCount} reels between ${rollMin} and ${faceCount}`)
+        for (i = rollMin; i < reelCount; i++) {
+            output.result.push(Math.floor(Math.random() * (faceCount) + rollMin))
         }
-        console.log(`Result: ${output}`)
+        console.log(`Result: ${output.result}`)
 
         return output;
     }
