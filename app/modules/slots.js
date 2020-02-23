@@ -17,7 +17,7 @@ module.exports = {
         return output;
     },
 
-    roll : function() {
+    roll : function(req, rollType) {
         let output = {};
         output.result = [];
 
@@ -43,8 +43,13 @@ module.exports = {
             console.log(`Result: No win`)
         }
 
-        output.bonus = (Math.random() < skin.bonusOdds);
-
+        if (rollType !== 'bonus') {
+            output.bonus = (Math.random() < skin.bonusOdds);
+            if (output.bonus) {
+                output.bonusRoll = module.exports.roll(null, 'bonus');
+            }
+        } 
+        else output.bonus = false; 
         return output;
     }
 }
