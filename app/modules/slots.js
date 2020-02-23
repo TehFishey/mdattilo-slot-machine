@@ -27,6 +27,24 @@ module.exports = {
         }
         console.log(`Result: ${output.result}`)
 
+        let count = []
+        output.result.forEach((x) => {count[x] = (count[x] || 0) + 1;});
+        count.forEach((x, i) => {if (i !== 0) count[i] += (count[0] || 0);});
+        if (count.some((x) => {return x >= skin.minBigWin})) {
+            output.winType = 'bigWin';
+            console.log(`Result: Large win (threshold ${skin.minBigWin})`)
+        }
+        else if (count.some((x) => {return x >= skin.minSmallWin})) {
+            output.winType = 'smallWin';
+            console.log(`Result: Small win (threshold ${skin.minSmallWin})`)
+        }
+        else {
+            output.winType = 'noWin';
+            console.log(`Result: No win`)
+        }
+
+        output.bonus = (Math.random() < skin.bonusOdds);
+
         return output;
     }
 }

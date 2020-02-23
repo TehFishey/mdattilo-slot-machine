@@ -11,11 +11,6 @@ module.exports = http.createServer((req,res) => {
             router.ajaxRequest(req,res);
     }
 
-    // POST Request
-    //else if (req.method === 'POST') {
-    //    router.postRequest(req,res);
-    //}
-
     else {
         router.invalidRequest(req, res);
     }
