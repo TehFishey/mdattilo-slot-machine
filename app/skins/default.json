@@ -1,0 +1,11 @@
+{
+    "rouletteReels" : 3,
+    "rouletteFaces" : 5,
+    "useWildcardFace" : true,
+
+    "minSmallWin" : 2,
+    "minBigWin" : 3,
+
+    "resourcesDirectory" : "./default",
+    "faceMappings" : {"0" : "SYM0.png", "1" : "SYM2.png", "2" : "SYM2.png", "3" : "SYM3.png", "4" : "SYM4.png", "5" : "SYM5.png"}
+}

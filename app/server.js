@@ -1,5 +1,6 @@
-const hostname = 'localhost';
-const port = 8000;
+const config = require('./config/config.json');
+const hostname = config.hostname;
+const port = config.port;
 
 const server = require('./controller.js');
 
