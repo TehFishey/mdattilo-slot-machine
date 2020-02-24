@@ -5,51 +5,62 @@ const reelCount = skin.rouletteReels;
 const faceCount = skin.rouletteFaces;
 const rollMin = (skin.useWildcardFace === true) ? 0 : 1;
 
-module.exports = {
+exports.template = function() {
+    let output = {};
 
-    template : function() {
-        let output = {};
+    output.reelCount = reelCount;
+    output.resourcesDirectory = skin.resourcesDirectory;
+    output.faceMappings = skin.faceMappings;
 
-        output.reelCount = reelCount;
-        output.resourcesDirectory = skin.resourcesDirectory;
-        output.faceMappings = skin.faceMappings;
+    return output;
+},
 
-        return output;
-    },
+exports.roll = function(req, isBonus) {
+    let output = {};
+    
+    output.result = spinReels(rollMin, faceCount, reelCount);
+    output.winType = calcWin(output.result);
 
-    roll : function(req, rollType) {
-        let output = {};
-        output.result = [];
-
-        console.log(`Rolling ${reelCount} reels between ${rollMin} and ${faceCount}`)
-        for (i = 0; i < reelCount; i++) {
-            output.result.push(Math.floor(Math.random() * (faceCount) + rollMin))
+    if (!isBonus) {
+        output.bonus = (Math.random() < skin.bonusOdds);
+        if (output.bonus) {
+            output.bonusRoll = exports.roll(null, true);
         }
-        console.log(`Result: ${output.result}`)
+    } else output.bonus = false; 
 
-        let count = []
-        output.result.forEach((x) => {count[x] = (count[x] || 0) + 1;});
-        count.forEach((x, i) => {if (i !== 0) count[i] += (count[0] || 0);});
-        if (count.some((x) => {return x >= skin.minBigWin})) {
-            output.winType = 'bigWin';
-            console.log(`Result: Large win (threshold ${skin.minBigWin})`)
-        }
-        else if (count.some((x) => {return x >= skin.minSmallWin})) {
-            output.winType = 'smallWin';
-            console.log(`Result: Small win (threshold ${skin.minSmallWin})`)
-        }
-        else {
-            output.winType = 'noWin';
-            console.log(`Result: No win`)
-        }
+    return output;
+}
 
-        if (rollType !== 'bonus') {
-            output.bonus = (Math.random() < skin.bonusOdds);
-            if (output.bonus) {
-                output.bonusRoll = module.exports.roll(null, 'bonus');
-            }
-        } 
-        else output.bonus = false; 
-        return output;
+function spinReels(min, max, number) {
+    result = []
+    
+    console.log(`Rolling ${number} reels between ${min} and ${max}`)
+    min = Math.ceil(rollMin);
+    max = Math.floor(faceCount);
+    for (i = 0; i < number; i++) {
+        result.push(Math.floor(Math.random() * (max - min + 1) + min))
+    }
+    console.log(`Result: ${result}`)
+
+    return result;
+}
+
+function calcWin(result) {
+    let count = []
+    
+    result.forEach((x) => {count[x] = (count[x] || 0) + 1;});
+    count.forEach((x, i) => {if (i !== 0) count[i] += (count[0] || 0);});
+
+    if (count.some((x) => {return x >= skin.minBigWin})) {
+        console.log(`Result: Large win (threshold ${skin.minBigWin})`)
+        return'bigWin';
+    }
+    else if (count.some((x) => {return x >= skin.minSmallWin})) {
+        console.log(`Result: Small win (threshold ${skin.minSmallWin})`)
+        return'smallWin';
+    }
+    else {
+        console.log(`Result: No win`)
+        return'noWin';
     }
 }
