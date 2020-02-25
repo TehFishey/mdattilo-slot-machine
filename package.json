@@ -1,0 +1,26 @@
+{
+  "name": "mdattilo-slot-machine",
+  "version": "1.0.0",
+  "description": "slot machine game for coding home test",
+  "main": "app/server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TehFishey/mdattilo-slot-machine.git"
+  },
+  "author": "Michael D'Attilo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TehFishey/mdattilo-slot-machine/issues"
+  },
+  "homepage": "https://github.com/TehFishey/mdattilo-slot-machine#readme",
+  "engines": {
+    "node": "12.14.0"
+  }
+}

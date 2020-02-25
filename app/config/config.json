@@ -1,5 +1,5 @@
 {
-    "hostname" : "localhost",
+    "hostname" : "",
     "port" : "8000",
     
     "slotsSkin" : "slots-default.json"
