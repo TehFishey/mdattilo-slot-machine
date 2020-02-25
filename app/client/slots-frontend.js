@@ -109,7 +109,10 @@ async function buildTemplate() {
         };
         
         let zOffset = Math.round((115/2)/Math.tan(Math.PI/facesPerReel)); 
-        stage.setAttribute("style", `-webkit-perspective: ${200*facesPerReel}; width: ${175*json.reelCount}px;`)
+        stage.setAttribute("style", 
+            `width: ${175*json.reelCount}px;
+            -webkit-perspective: ${200*facesPerReel}; 
+            -perspective: ${200*facesPerReel};`)
         if (json.reelCount > 3) box.setAttribute("style", `width: ${800+(json.reelCount-3) * 175}px`)
 
         for (i=0; i < json.reelCount; i++) {
@@ -120,7 +123,9 @@ async function buildTemplate() {
             //Create reel faces, with proper transforms, in the reel div.
                 let reelFace = document.createElement('div');
                 reelFace.setAttribute("class", "reel-face");
-                reelFace.setAttribute("style", `-webkit-transform: rotateX(${slotFaces.degreeMap[n]}deg) translateZ(${zOffset}px);`);
+                reelFace.setAttribute("style", 
+                    `-webkit-transform: rotateX(${slotFaces.degreeMap[n]}deg) translateZ(${zOffset}px);
+                    -transform: rotateX(${slotFaces.degreeMap[n]}deg) translateZ(${zOffset}px);`);
                 reelFace.appendChild(slotImage(n));
                 slotReel.appendChild(reelFace);
             }
