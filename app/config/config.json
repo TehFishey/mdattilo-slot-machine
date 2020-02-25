@@ -1,6 +1,6 @@
 {
     "hostname" : "0.0.0.0",
-    "port" : "",
+    "port" : "8000",
     
     "slotsSkin" : "slots-default.json"
 }
