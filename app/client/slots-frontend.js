@@ -67,7 +67,7 @@ function spinSlots(json) {
         
         // Reels will rotate counter-clockwise 6+{reel number} times, and then spin to the proper faces.
         let targetDegrees = -(slotFaces.degreeMap[json.result[i]] + 360*(6+i));
-        let time = 3+i*5;
+        let time = 3+i*.5;
 
         // Set the CSS variables:
         reelMap[i].style.setProperty('--startPos', `${positionMap[i]}deg`)
@@ -129,7 +129,7 @@ function spinSlots(json) {
                 spinSlots(json.bonusRoll);
             }, 750);
         } else spinButton.classList.remove("disabled");
-    }, 3200 + ((json.result.length-1) * 1000));
+    }, 3200 + ((json.result.length-1) * 500));
 }
 
 /**********************************************
@@ -165,12 +165,13 @@ async function buildTemplate() {
         // To find how far each line must be from the circle's center, we need to first find the circle's radius (r=c/2pi) and work in reverse.
         // Formula taken from https://codepen.io/mops/pen/pKYOqW, because I'm terrible at trig :(
         let zOffset = Math.round((115/2)/Math.tan(Math.PI/facesPerReel)); 
+        
         // Set various style elements based on how many reels we have and how large each reel is.
         stage.setAttribute("style", 
             `width: ${175*json.reelCount}px;
             -webkit-perspective: ${200*facesPerReel}; 
             -perspective: ${200*facesPerReel};`)
-        if (json.reelCount > 3) box.setAttribute("style", `width: ${800+(json.reelCount-3) * 175}px`)
+        if (json.reelCount > 3) box.setAttribute("style", `width: ${800+(json.reelCount-3) * 200}px`)
 
         // Create i reels, where i is defined by the slots config/template json.
         for (i=0; i < json.reelCount; i++) {
@@ -183,9 +184,10 @@ async function buildTemplate() {
                 reelFace.setAttribute("style", 
                     `-webkit-transform: rotateX(${slotFaces.degreeMap[n]}deg) translateZ(${zOffset}px);
                     -transform: rotateX(${slotFaces.degreeMap[n]}deg) translateZ(${zOffset}px);`);
-                reelFace.appendChild(buildSlotImg(n));
+                
                 // Place the proper image element into each reel face.
-                reelFace.appendChild(slotImage(n));
+                reelFace.appendChild(buildSlotImg(n));
+                
                 slotReel.appendChild(reelFace);
             }
 

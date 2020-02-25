@@ -22,10 +22,9 @@ const mime = {
 // really know how to implement that, but it probably should have it...
 exports.getRequest = function(req, res) {
     let filePath = path.resolve(public + req.url);
-    if (req.url === '/') filePath = path.join(public, homepage);
     
     //Return a homepage in case there's no url. This should probably be defined in the config
-    if (req.url === '/') filePath = path.join(public, homePage);
+    if (req.url === '/') filePath = path.join(public, homepage);
 
     //Fetch the file type...
     let fileType = mime[path.extname(filePath).slice(1)] || 'text/plain';
@@ -51,11 +50,10 @@ exports.ajaxRequest = function(req, res) {
     
     //Get the last segment of the url.
     let reqPage = req.url.split('\\').pop().split('/').pop();
-    if (reqPage[0] === '?') reqPage = (homePage + reqpage);
     
     //We know it's a '?' query because we checked in the controller. 
     //Set the page to home if there is none.
-    if (reqPage[0] === '?') reqPage = (homePage + reqPage);
+    if (reqPage[0] === '?') reqPage = (homepage + reqPage);
     
     //Determine the module and function based on page name/query text...
     let reqModule = require(`./modules/${reqPage.split('.')[0]}.js`);
