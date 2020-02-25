@@ -3,78 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>MDSlots</title>
+    <link rel="stylesheet" href="slots.css">
 </head>
 <body>
-    <h2>
-        <table>
-            <tr id="reels"></tr>
-        </table>
-    </h2>
-    <h3>
-        <img id="slot-btn" alt="Play!" src="resources/button.png">
-        <div id="feedback"></div>
-    </h3>
+    <div id="slotmachine-box">
+        <div id="slotmachine-feedback">
+            <a id="feedback-text">Welcome!</a>
+        </div>
+        <div id="slotmachine-frame">
+            <div id="slotmachine-stage">
+
+            </div>
+        </div>
+        <div id="slotmachine-button">Spin the Slots!</div>
+    </div>
 </body>
-<script>
-    const reels = document.getElementById('reels');
-    const rollButton = document.getElementById('slot-btn');
-    const feedback = document.getElementById('feedback');
-    let slotMap = {};
-    let imageMap = {};
-    
-    buildTemplate();
-
-    rollButton.addEventListener('click', async _=> {
-        try {
-            const response = await fetch(window.location.href + '?roll');
-            const roll = await response.json();
-            numbers = roll.result;
-            for (i = 0; i < numbers.length; i++) {
-                slotMap[i].innerHTML = '';
-                slotMap[i].appendChild(slotImage(numbers[i]))
-            }
-            switch (roll.winType) {
-                case 'bigWin':
-                    feedback.innerHTML = 'Big Win!'
-                    break;
-                case 'smallWin':
-                    feedback.innerHTML = 'Small Win!'
-                    break;
-                case 'noWin':
-                    feedback.innerHTML = 'Try Again...'
-                    break;
-            }
-        } catch(err) {
-            console.error(`Error: ${err}`);
-        }
-    });
-
-    async function buildTemplate() {
-        try {
-            const response = await fetch(window.location.href + '?template');
-            const json = await response.json();
-            console.log(json.faceMappings.length);
-            for (i = 0; i < json.faceMappings.length; i++) {
-                imageMap[i] = json.faceMappings[i];
-                imageMap[i] = 'resources/' + json.resourcesDirectory + '/' + imageMap[i]
-                console.log(imageMap[i])
-            };
-            for (i = 0; i < json.reelCount; i++) {
-                slotMap[i] = document.createElement('td');
-                slotMap[i].appendChild(slotImage(i+1));
-                reels.appendChild(slotMap[i]);
-            };
-        } catch(err) {
-            console.error(`Error: ${err}`);
-        }
-    };
-
-    function slotImage(index) {
-        img = document.createElement("IMG");
-        img.setAttribute("src", imageMap[index]);
-        img.setAttribute("alt", index);
-        return img;
-    };
-</script>
+<script src='slots-frontend.js'></script>
 </html>

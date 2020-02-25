@@ -8,7 +8,7 @@ const mime = {
     html: 'text/html',
     css: 'text/css',
     png: 'image/png',
-    json: 'application/json'
+    js: 'application/javascript'
 }
 
 exports.getRequest = function(req, res) {

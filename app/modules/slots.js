@@ -3,28 +3,31 @@ const skin = require('../skins/' + config.slotsSkin);
 
 const reelCount = skin.rouletteReels;
 const faceCount = skin.rouletteFaces;
+const bonusOdds = skin.bonusOdds;
 const rollMin = (skin.useWildcardFace === true) ? 0 : 1;
 
 exports.template = function() {
     let output = {};
 
     output.reelCount = reelCount;
+    output.faceCount = faceCount;
     output.resourcesDirectory = skin.resourcesDirectory;
     output.faceMappings = skin.faceMappings;
+    output.usingWildcard = skin.useWildcardFace;
 
     return output;
 },
 
-exports.roll = function(req, isBonus) {
+exports.spin = function(req, isBonus) {
     let output = {};
     
     output.result = spinReels(rollMin, faceCount, reelCount);
     output.winType = calcWin(output.result);
 
     if (!isBonus) {
-        output.bonus = (Math.random() < skin.bonusOdds);
+        output.bonus = (Math.random() < bonusOdds);
         if (output.bonus) {
-            output.bonusRoll = exports.roll(null, true);
+            output.bonusRoll = exports.spin(null, true);
         }
     } else output.bonus = false; 
 
