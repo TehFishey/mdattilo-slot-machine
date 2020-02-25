@@ -1,8 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const public = path.resolve(__dirname, './client');
-const homePage = 'slots.html';
+const config = require('./config/config.json');
+const public = path.resolve(__dirname, '../client');
+const homepage = config.homepage;
 
 const mime = {
     html: 'text/html',
@@ -13,7 +14,7 @@ const mime = {
 
 exports.getRequest = function(req, res) {
     let filePath = path.resolve(public + req.url);
-    if (req.url === '/') filePath = path.join(public, homePage);
+    if (req.url === '/') filePath = path.join(public, homepage);
     let fileType = mime[path.extname(filePath).slice(1)] || 'text/plain';
     
     let streamOut = fs.createReadStream(filePath);
@@ -31,7 +32,7 @@ exports.getRequest = function(req, res) {
 
 exports.ajaxRequest = function(req, res) {
     let reqPage = req.url.split('\\').pop().split('/').pop();
-    if (reqPage[0] === '?') reqPage = (homePage + reqPage);
+    if (reqPage[0] === '?') reqPage = (homepage + reqPage);
     
     let reqModule = require(`./modules/${reqPage.split('.')[0]}.js`);
     let reqFunc = reqModule[reqPage.split('?')[1]];

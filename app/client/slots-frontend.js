@@ -4,8 +4,8 @@ const frame = document.getElementById('slotmachine-frame');
 const stage = document.getElementById("slotmachine-stage");
 const spinButton = document.getElementById('slotmachine-button');
 
-let reelMap = []; // takes index == reel number, outputs that reel object
-let positionMap = [0,0,0]; // takes index == reel number, output that reel's current rotation (in degrees);
+let reelMap = [];
+let positionMap = [0,0,0];
 
 let slotFaces = {
     wildcardOffset : 0,
@@ -36,7 +36,7 @@ function spinSlots(json) {
 
     for (i = 0; i < json.result.length; i++) {
         let targetDegrees = -(slotFaces.degreeMap[json.result[i]] + 360*(6+i));
-        let time = 3+i;
+        let time = 3+i*.5;
 
         reelMap[i].style.setProperty('--startPos', `${positionMap[i]}deg`)
         reelMap[i].style.setProperty('--targetPos', `${targetDegrees}deg`)
@@ -89,7 +89,7 @@ function spinSlots(json) {
                 spinSlots(json.bonusRoll);
             }, 750);
         } else spinButton.classList.remove("disabled");
-    }, 3200 + ((json.result.length-1) * 1000));
+    }, 3200 + ((json.result.length-1) * 500));
 }
 
 async function buildTemplate() {
@@ -109,24 +109,24 @@ async function buildTemplate() {
         };
         
         let zOffset = Math.round((115/2)/Math.tan(Math.PI/facesPerReel)); 
+
         stage.setAttribute("style", 
             `width: ${175*json.reelCount}px;
             -webkit-perspective: ${200*facesPerReel}; 
             -perspective: ${200*facesPerReel};`)
-        if (json.reelCount > 3) box.setAttribute("style", `width: ${800+(json.reelCount-3) * 175}px`)
+        if (json.reelCount > 3) box.setAttribute("style", `width: ${800+(json.reelCount-3) * 200}px`)
 
         for (i=0; i < json.reelCount; i++) {
             let slotReel = document.createElement('div');
             slotReel.setAttribute("class", "reel");
             
             for (n=slotFaces.wildcardOffset; n < allFaceCount; n++) {
-            //Create reel faces, with proper transforms, in the reel div.
                 let reelFace = document.createElement('div');
                 reelFace.setAttribute("class", "reel-face");
                 reelFace.setAttribute("style", 
                     `-webkit-transform: rotateX(${slotFaces.degreeMap[n]}deg) translateZ(${zOffset}px);
                     -transform: rotateX(${slotFaces.degreeMap[n]}deg) translateZ(${zOffset}px);`);
-                reelFace.appendChild(slotImage(n));
+                reelFace.appendChild(buildSlotImg(n));
                 slotReel.appendChild(reelFace);
             }
 
@@ -139,7 +139,7 @@ async function buildTemplate() {
     }
 };
 
-function slotImage(index) {
+function buildSlotImg(index) {
     if (slotFaces.imageMap[index] !== undefined) {
         img = document.createElement("IMG");
         img.setAttribute("src", slotFaces.imageMap[index]);

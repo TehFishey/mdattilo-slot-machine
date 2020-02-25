@@ -1,0 +1,6 @@
+{
+    "hostname" : "localhost",
+    "port" : "8000",
+    "homepage" : "slots.html",
+    "slotsskin" : "slots-default.json"
+}
