@@ -10,8 +10,10 @@ exports.template = function() {
     let output = {};
 
     output.reelCount = reelCount;
+    output.faceCount = faceCount;
     output.resourcesDirectory = skin.resourcesDirectory;
     output.faceMappings = skin.faceMappings;
+    output.usingWildcard = skin.useWildcardFace;
 
     return output;
 },

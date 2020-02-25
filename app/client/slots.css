@@ -16,7 +16,7 @@ body {background-color: #54514f;}
 
 #slotmachine-feedback {
   height: 20%;
-  width: 80%;
+  width: 640px;
   display: flex;
   background-color: #54514f;
   border-radius: 25px;
@@ -27,8 +27,6 @@ body {background-color: #54514f;}
 #slotmachine-feedback > a { 
   margin: auto;
   text-align: center; 
-
-  text-align: center;
   font-weight: normal;
   color: #ffffff;
   text-transform: uppercase;
@@ -46,12 +44,13 @@ body {background-color: #54514f;}
   background-color: #e0caa8;
   border-radius: 25px;
   margin: 10px;
+  overflow: hidden;
   -webkit-box-shadow: inset 0 0 12px #000000;
 }
 
 #slotmachine-button {
   height: 20%;
-  width: 80%;
+  width: 640px;
   display:inline-block;
   padding:0.4em 1.6em;
   border-radius: 25px;
@@ -83,6 +82,7 @@ body {background-color: #54514f;}
   align-items: center;
   height: 275px;
   -webkit-transform-style: preserve-3d;
+  /*-webkit-perspective: 1200;*/
 }
 
 .reel {
@@ -114,6 +114,10 @@ body {background-color: #54514f;}
   box-sizing: border-box;
   margin-left: -87.5px;
   margin-top: -57.5px;
+
+  font-family: 'Bangers', cursive;
+  text-align:center;
+  font-size: 60px;
 }
 
 .reel-face > img {
@@ -161,4 +165,3 @@ body {background-color: #54514f;}
   75%  { background-color: var(--flashColor); }
   100%  { background-color: var(--startColor); }
 }
-
