@@ -27,22 +27,22 @@ let slotFaces = {
 };
 
 
-//We start by building the HTML objects. This is done immediately upon page load...
+// We start by building the HTML objects. This is done immediately upon page load...
 buildTemplate();
 
-//...we then set up the event listener for the "Spin" button.
+// ...we then set up the event listener for the "Spin" button.
 spinButton.addEventListener('click', async _=> {
     if (!spinButton.classList.contains("disabled")) {
         try {
-            //Fetch the spin-response .json on click...
+            // Fetch the spin-response .json on click...
             const response = await fetch(window.location.href + '?spin');
             const results = await response.json();
             console.log('Recieved response object: ', results);
 
-            //...do a pretty thing with the UI...
+            // ...do a pretty thing with the UI...
             feedback.innerHTML = 'Rolling!';
 
-            //...and run the spin function.
+            // ...and run the spin function.
             spinSlots(results);
         
         } catch(err) {
@@ -55,7 +55,7 @@ spinButton.addEventListener('click', async _=> {
             "SPIN" Feature
 ***********************************************/
 
-//This function controlls the page's 'Spin' animations.
+// This function controlls the page's 'Spin' animations.
 function spinSlots(json) {
     
     // Start by disabling the 'spin' button. We do this from inside the function so that we don't run into 
@@ -65,28 +65,28 @@ function spinSlots(json) {
     // Make each reel spin for a bit, and then land on the face which matches the server's output.
     for (i = 0; i < json.result.length; i++) {
         
-        //Reels will rotate counter-clockwise 6+{reel number} times, and then spin to the proper faces.
+        // Reels will rotate counter-clockwise 6+{reel number} times, and then spin to the proper faces.
         let targetDegrees = -(slotFaces.degreeMap[json.result[i]] + 360*(6+i));
         let time = 3+i; // oops, it should be 3+i*.5. 
 
-        //Set the CSS variables:
+        // Set the CSS variables:
         reelMap[i].style.setProperty('--startPos', `${positionMap[i]}deg`)
         reelMap[i].style.setProperty('--targetPos', `${targetDegrees}deg`)
         reelMap[i].style.setProperty('--spinTime', `${time}s`)
 
-        //We use a nifty CSS hack to restart the spin animation:
-        //Remove the animation class, trigger a reflow on the object, then add the class again.
-        //See: https://css-tricks.com/restart-css-animation/
+        // We use a nifty CSS hack to restart the spin animation:
+        // Remove the animation class, trigger a reflow on the object, then add the class again.
+        // See: https://css-tricks.com/restart-css-animation/
         reelMap[i].classList.remove("spin-animation");
         void reelMap[i].offsetWidth;
         reelMap[i].classList.add("spin-animation");
 
-        //After the spin, save a normalized value for what face we've landed on.
-        //If we saved our actual targetDegrees, the reel wouldn't move much for the next spin.
+        // After the spin, save a normalized value for what face we've landed on.
+        // If we saved our actual targetDegrees, the reel wouldn't move much for the next spin.
         positionMap[i] = slotFaces.degreeMap[json.result[i]];
     }
     
-    //Set a timeout while the reels spin, then play a little animation when they're done.
+    // Set a timeout while the reels spin, then play a little animation when they're done.
     setTimeout( () => {
         switch (json.winType) {
         case 'bigWin':
@@ -121,8 +121,8 @@ function spinSlots(json) {
         break;
         }
         
-        //If there's a bonus roll, display feedback to the user and run spinSlots() again (using the bonus roll as input)
-        //otherwise, re-enable the 'spin' button.
+        // If there's a bonus roll, display feedback to the user and run spinSlots() again (using json.bonusRoll as input)
+        // otherwise, re-enable the 'spin' button.
         if (json.bonus) {
             setTimeout( () => {
                 feedback.innerHTML = 'Bonus Roll!'
@@ -138,11 +138,11 @@ function spinSlots(json) {
 
 async function buildTemplate() {
     try {
-        //Fetch the template .json from the server on page load
+        // Fetch the template .json from the server on page load
         const response = await fetch(window.location.href + '?template');
         const json = await response.json();
         
-        // If wildcards are turned off in the config, we're going to need to hide it our mappings.
+        // If wildcards are turned off in the config, we're going to need to hide them our mappings.
         // We still want to map the wildcard as face 0 (so that our array indicies line up with the server's inputs),
         // but we don't want to actually use it.
         slotFaces.wildcardOffset = json.usingWildcard ? 0 : 1;
@@ -153,18 +153,17 @@ async function buildTemplate() {
         // Here we set up our mappings:
         for (i = slotFaces.wildcardOffset; i < allFaceCount; i++) {
             
-            // Map resources/images used for each face. 
-            // If there are more reels declared in the configs than images, we'll use numbers for the excess.
+            // Map the images to be displayed on each reel face. 
             if (json.faceMappings[i] !== undefined)
                 slotFaces.imageMap[i] = 'resources/' + json.resourcesDirectory + '/' + json.faceMappings[i];
 
-            // Map the rotation position of each face.
+            // Map the rotation position associated with each reel face.
             slotFaces.degreeMap[i] = (360/(facesPerReel)) * i;
         };
         
         // Each reel is essentially a circle constructed out of {facesPerReel} lines which are tangential to the circle's circumference. 
         // To find how far each line must be from the circle's center, we need to first find the circle's radius (r=c/2pi) and work in reverse.
-        // Javascript formula taken from https://codepen.io/mops/pen/pKYOqW, because I'm terrible at trig :(
+        // Formula taken from https://codepen.io/mops/pen/pKYOqW, because I'm terrible at trig :(
         let zOffset = Math.round((115/2)/Math.tan(Math.PI/facesPerReel)); 
 
         // Set various style elements based on how many reels we have and how large each reel is.
@@ -174,12 +173,12 @@ async function buildTemplate() {
             -perspective: ${200*facesPerReel};`)
         if (json.reelCount > 3) box.setAttribute("style", `width: ${800+(json.reelCount-3) * 175}px`)
 
-        // Create i reels, where i is defined by the slots skin.
+        // Create i reels, where i is defined by the slots config/template json.
         for (i=0; i < json.reelCount; i++) {
             let slotReel = document.createElement('div');
             slotReel.setAttribute("class", "reel");
             
-            //For each reel, create n faces, and apply proper transforms
+            // For each reel, create n faces, and apply proper transforms to each of them.
             for (n=slotFaces.wildcardOffset; n < allFaceCount; n++) {
                 let reelFace = document.createElement('div');
                 reelFace.setAttribute("class", "reel-face");
@@ -187,7 +186,7 @@ async function buildTemplate() {
                     `-webkit-transform: rotateX(${slotFaces.degreeMap[n]}deg) translateZ(${zOffset}px);
                     -transform: rotateX(${slotFaces.degreeMap[n]}deg) translateZ(${zOffset}px);`);
                 
-                //Place the proper image into each reel face.
+                // Place the proper image element into each reel face.
                 reelFace.appendChild(slotImage(n));
                 slotReel.appendChild(reelFace);
             }
