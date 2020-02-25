@@ -179,7 +179,8 @@ async function buildTemplate() {
             slotReel.setAttribute("class", "reel");
             
             // For each reel, create n faces, and apply proper transforms to each of them.
-            for (n=slotFaces.wildcardOffset; n < allFaceCount; n++) {                let reelFace = document.createElement('div');
+            for (n=slotFaces.wildcardOffset; n < allFaceCount; n++) {                
+                let reelFace = document.createElement('div');
                 reelFace.setAttribute("class", "reel-face");
                 reelFace.setAttribute("style", 
                     `-webkit-transform: rotateX(${slotFaces.degreeMap[n]}deg) translateZ(${zOffset}px);
