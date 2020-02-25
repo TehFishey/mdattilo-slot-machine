@@ -1,5 +1,9 @@
 body {background-color: #54514f;}
 
+/*
+  This section contains CSS for all of the slot machine boxes/div elements.
+*/
+
 #slotmachine-box {
   width: 800px;
   height: 800px;
@@ -83,6 +87,9 @@ body {background-color: #54514f;}
   border-color:#ffffff;
 }
 
+/*
+  This section contains CSS for all of the slot machine's 3d elements, and their container'.
+*/
 
 #slotmachine-stage {
   margin: 0px auto;
@@ -145,6 +152,11 @@ body {background-color: #54514f;}
   max-height:100%;
 }
 
+/*
+  These animation classes are dynamically added/removed from elements to
+  execute the animations.
+*/
+
 .spin-animation {
   -webkit-animation-name: spin;
   -webkit-animation-duration: var(--spinTime);
@@ -168,6 +180,10 @@ body {background-color: #54514f;}
   animation: small-flash 1s ease-out;
   animation-iteration-count: 1;
 }
+
+/*
+  Webkit animation elements, which define the transform behaviors.
+*/
 
 @-webkit-keyframes spin {
   0%    { -webkit-transform: rotateX(var(--startPos)); }
