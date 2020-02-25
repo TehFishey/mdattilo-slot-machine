@@ -67,7 +67,7 @@ function spinSlots(json) {
         
         // Reels will rotate counter-clockwise 6+{reel number} times, and then spin to the proper faces.
         let targetDegrees = -(slotFaces.degreeMap[json.result[i]] + 360*(6+i));
-        let time = 3+i; // oops, it should be 3+i*.5. 
+        let time = 3+i*5;
 
         // Set the CSS variables:
         reelMap[i].style.setProperty('--startPos', `${positionMap[i]}deg`)
@@ -165,7 +165,6 @@ async function buildTemplate() {
         // To find how far each line must be from the circle's center, we need to first find the circle's radius (r=c/2pi) and work in reverse.
         // Formula taken from https://codepen.io/mops/pen/pKYOqW, because I'm terrible at trig :(
         let zOffset = Math.round((115/2)/Math.tan(Math.PI/facesPerReel)); 
-
         // Set various style elements based on how many reels we have and how large each reel is.
         stage.setAttribute("style", 
             `width: ${175*json.reelCount}px;
@@ -179,13 +178,12 @@ async function buildTemplate() {
             slotReel.setAttribute("class", "reel");
             
             // For each reel, create n faces, and apply proper transforms to each of them.
-            for (n=slotFaces.wildcardOffset; n < allFaceCount; n++) {
-                let reelFace = document.createElement('div');
+            for (n=slotFaces.wildcardOffset; n < allFaceCount; n++) {                let reelFace = document.createElement('div');
                 reelFace.setAttribute("class", "reel-face");
                 reelFace.setAttribute("style", 
                     `-webkit-transform: rotateX(${slotFaces.degreeMap[n]}deg) translateZ(${zOffset}px);
                     -transform: rotateX(${slotFaces.degreeMap[n]}deg) translateZ(${zOffset}px);`);
-                
+                reelFace.appendChild(buildSlotImg(n));
                 // Place the proper image element into each reel face.
                 reelFace.appendChild(slotImage(n));
                 slotReel.appendChild(reelFace);
@@ -202,7 +200,7 @@ async function buildTemplate() {
 
 // Simple helper function for finding image paths based on skin configs.
 // In cases where the config doesn't define an image, it'll return a number instead.
-function slotImage(index) {
+function buildSlotImg(index) {
     if (slotFaces.imageMap[index] !== undefined) {
         img = document.createElement("IMG");
         img.setAttribute("src", slotFaces.imageMap[index]);

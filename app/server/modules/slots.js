@@ -1,5 +1,5 @@
 const config = require('../config/config.json');
-const skin = require('../skins/' + config.slotsSkin);
+const skin = require('../skins/' + config.slotsskin);
 
 const reelCount = skin.rouletteReels;
 const faceCount = skin.rouletteFaces;
