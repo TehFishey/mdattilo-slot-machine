@@ -3,78 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>MDSlots</title>
+    <link rel="stylesheet" href="slots.css">
 </head>
 <body>
-    <h2>
-        <table>
-            <tr id="reels"></tr>
-        </table>
-    </h2>
-    <h3>
-        <img id="slot-btn" alt="Play!" src="resources/button.png">
-        <div id="feedback"></div>
-    </h3>
+    <div id="slotmachine-box">
+        <div id="slotmachine-feedback">
+            <a id="feedback-text">Welcome!</a>
+        </div>
+        <div id="slotmachine-frame">
+            <div id="slotmachine-stage">
+
+            </div>
+        </div>
+        <div id="slotmachine-button">Spin the Slots!</div>
+    </div>
 </body>
 <script>
-    const reels = document.getElementById('reels');
-    const rollButton = document.getElementById('slot-btn');
-    const feedback = document.getElementById('feedback');
-    let slotMap = {};
-    let imageMap = {};
+    const feedback = document.getElementById("feedback-text");
+    const frame = document.getElementById('slotmachine-frame');
+    const stage = document.getElementById("slotmachine-stage");
+    const spinButton = document.getElementById('slotmachine-button');
+
+    let imageMap = [];
+    let reelMap = [];
+    let degreeMap = [];
+    let positionMap = [0,0,0];
+
     
     buildTemplate();
 
-    rollButton.addEventListener('click', async _=> {
-        try {
-            const response = await fetch(window.location.href + '?roll');
-            const roll = await response.json();
-            numbers = roll.result;
-            for (i = 0; i < numbers.length; i++) {
-                slotMap[i].innerHTML = '';
-                slotMap[i].appendChild(slotImage(numbers[i]))
+    spinButton.addEventListener('click', async _=> {
+        if (!spinButton.classList.contains("disabled")) {
+            try {
+                const response = await fetch(window.location.href + '?spin');
+                const results = await response.json();
+
+                
+                feedback.innerHTML = 'Rolling!'
+                spinSlots(results);
+            
+            } catch(err) {
+                console.error(`Error: ${err}`);
             }
-            switch (roll.winType) {
-                case 'bigWin':
-                    feedback.innerHTML = 'Big Win!'
-                    break;
-                case 'smallWin':
-                    feedback.innerHTML = 'Small Win!'
-                    break;
-                case 'noWin':
-                    feedback.innerHTML = 'Try Again...'
-                    break;
-            }
-        } catch(err) {
-            console.error(`Error: ${err}`);
         }
     });
+
+    function spinSlots(json) {
+        spinButton.classList.add("disabled");
+
+        for (i = 0; i < json.result.length; i++) {
+            let targetDegrees = -(degreeMap[json.result[i]] + 360*(6+i));
+            let time = 3+i;
+
+            reelMap[i].style.setProperty('--startPos', `${positionMap[i]}deg`)
+            reelMap[i].style.setProperty('--targetPos', `${targetDegrees}deg`)
+            reelMap[i].style.setProperty('--spinTime', `${time}s`)
+
+            reelMap[i].classList.remove("spin-animation");
+            void reelMap[i].offsetWidth;
+            reelMap[i].classList.add("spin-animation");
+
+            positionMap[i] = degreeMap[json.result[i]];
+        }
+        
+        setTimeout( () => {
+            switch (json.winType) {
+            case 'bigWin':
+                frame.style.setProperty('--startColor', '#e0caa8');
+                frame.style.setProperty('--flashColor', '#00d655')
+                frame.classList.remove("large-flash-animation");
+                void frame.offsetWidth;
+                frame.classList.add("large-flash-animation");
+
+                feedback.innerHTML = 'Big Winner!'
+                break;
+            case 'smallWin':
+                frame.style.setProperty('--startColor', '#e0caa8');
+                frame.style.setProperty('--flashColor', '#00d655')
+                frame.classList.remove("small-flash-animation");
+                void frame.offsetWidth;
+                frame.classList.add("small-flash-animation");
+
+                feedback.innerHTML = 'Winner!'
+                break;
+            case 'noWin':
+                frame.style.setProperty('--startColor', '#e0caa8');
+                frame.style.setProperty('--flashColor', '#c36363')
+                frame.classList.remove("small-flash-animation");
+                void frame.offsetWidth;
+                frame.classList.add("small-flash-animation");
+
+                feedback.innerHTML = 'Try Again...'
+            break;
+            }
+        
+            if (json.bonus) {
+                setTimeout( () => {
+                    feedback.innerHTML = 'Bonus Roll!'
+                    spinSlots(json.bonusRoll);
+                }, 750);
+            }
+            spinButton.classList.remove("disabled");
+        }, 3200 + ((json.result.length-1) * 1000));
+    }
 
     async function buildTemplate() {
         try {
             const response = await fetch(window.location.href + '?template');
             const json = await response.json();
-            console.log(json.faceMappings.length);
-            for (i = 0; i < json.faceMappings.length; i++) {
-                imageMap[i] = json.faceMappings[i];
-                imageMap[i] = 'resources/' + json.resourcesDirectory + '/' + imageMap[i]
-                console.log(imageMap[i])
-            };
-            for (i = 0; i < json.reelCount; i++) {
-                slotMap[i] = document.createElement('td');
-                slotMap[i].appendChild(slotImage(i+1));
-                reels.appendChild(slotMap[i]);
-            };
+            
+            imageMap = buildImageMap(json);
+            degreeMap = buildDegreeMap(json);
+            
+            
+            let zPix = 100;
+
+            stage.setAttribute("style", `width: ${175*json.reelCount}px;`);
+
+            for (i=0; i < json.reelCount; i++) {
+                let slotReel = document.createElement('div');
+                slotReel.setAttribute("class", "reel");
+                
+                for (n=0; n < imageMap.length; n++) {
+                //Create reel faces, with proper transforms, in the reel div.
+                    let reelFace = document.createElement('div');
+                    reelFace.setAttribute("class", "reel-face");
+                    reelFace.setAttribute("style", `-webkit-transform: rotateX(${degreeMap[n]}deg) translateZ(${zPix}px);`);
+                    reelFace.appendChild(slotImage(n));
+                    slotReel.appendChild(reelFace);
+                }
+
+                reelMap[i] = slotReel
+                stage.appendChild(slotReel);
+            }
+            
         } catch(err) {
             console.error(`Error: ${err}`);
         }
     };
 
+    function buildImageMap(json) {
+        map = []
+
+        for (i = 0; i < json.faceMappings.length; i++) {
+            map[i] = json.faceMappings[i];
+            map[i] = 'resources/' + json.resourcesDirectory + '/' + map[i];
+        };
+
+        return map;
+    }
+
+    function buildDegreeMap(json) {
+        map = []
+
+        for (i = 0; i < json.faceMappings.length; i++) {
+            map[i] = (360/json.faceMappings.length) * i;
+        }
+            
+        
+        return map;
+    }
+
     function slotImage(index) {
         img = document.createElement("IMG");
         img.setAttribute("src", imageMap[index]);
         img.setAttribute("alt", index);
+        img.setAttribute("class", "reel-img");
         return img;
     };
+
 </script>
 </html>
