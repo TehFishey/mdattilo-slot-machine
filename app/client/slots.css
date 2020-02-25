@@ -9,9 +9,11 @@ body {background-color: #54514f;}
   margin: auto;
   background-color: #8c5c46;
   border-radius: 25px;
+
   -webkit-box-shadow:
 		0px 8px 10px rgba(000,000,000,0.5),
-		inset 1px 2px 0px rgba(0, 0, 0, 0.4);
+    inset 1px 2px 0px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 8px 10px rgba(000,000,000,0.5);
 }
 
 #slotmachine-feedback {
@@ -21,7 +23,9 @@ body {background-color: #54514f;}
   background-color: #54514f;
   border-radius: 25px;
   margin: 10px;
+
   -webkit-box-shadow: inset 0 0 10px #000000;
+  box-shadow: inset 0 0 10px #000000;
 }
 
 #slotmachine-feedback > a { 
@@ -45,7 +49,9 @@ body {background-color: #54514f;}
   border-radius: 25px;
   margin: 10px;
   overflow: hidden;
+
   -webkit-box-shadow: inset 0 0 12px #000000;
+  box-shadow: inset 0 0 12px #000000;
 }
 
 #slotmachine-button {
@@ -65,7 +71,9 @@ body {background-color: #54514f;}
   transition: all 0.15s;
   background-color: #799082;
   border:0.1em solid #ffffff00;
+
   -webkit-box-shadow: inset 0 0 12px #000000;
+  box-shadow: inset 0 0 12px #000000;
 }
 
 #slotmachine-button:hover {
@@ -81,18 +89,27 @@ body {background-color: #54514f;}
   display: flex;
   align-items: center;
   height: 275px;
+
   -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
   /*-webkit-perspective: 1200;*/
 }
 
 .reel {
   height: 115px;
   width: 175px;
+  background-color: #000000;
+
   -webkit-animation-fill-mode: forwards;
   -webkit-animation-iteration-count: 1;
   -webkit-animation-timing-function: linear;
   -webkit-transform-style: preserve-3d;
-  background-color: #000000;
+
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-timing-function: linear;
+  transform-style: preserve-3d;
+  
 }
 
 .reel > :nth-child(odd) {
@@ -131,16 +148,25 @@ body {background-color: #54514f;}
 .spin-animation {
   -webkit-animation-name: spin;
   -webkit-animation-duration: var(--spinTime);
+
+  animation-name: spin;
+  animation-duration: var(--spinTime);
 }
 
 .large-flash-animation {
   -webkit-animation: large-flash 1.4s ease-out;
   -webkit-animation-iteration-count: 1;
+
+  animation: large-flash 1.4s ease-out;
+  animation-iteration-count: 1;
 }
 
 .small-flash-animation {
   -webkit-animation: small-flash 1s ease-out;
   -webkit-animation-iteration-count: 1;
+
+  animation: small-flash 1s ease-out;
+  animation-iteration-count: 1;
 }
 
 @-webkit-keyframes spin {
@@ -159,6 +185,29 @@ body {background-color: #54514f;}
 }
 
 @-webkit-keyframes small-flash {
+  0%   { background-color: var(--startColor); }
+  25%  { background-color: var(--flashColor); }
+  50%  { background-color: var(--startColor); }
+  75%  { background-color: var(--flashColor); }
+  100%  { background-color: var(--startColor); }
+}
+
+@keyframes spin {
+  0%    { transform: rotateX(var(--startPos)); }
+  100%  { transform: rotateX(var(--targetPos)); }
+}
+
+@keyframes large-flash {
+  0%   { background-color: var(--startColor); }
+  17%  { background-color: var(--flashColor); }
+  33%  { background-color: var(--startColor); }
+  50%  { background-color: var(--flashColor); }
+  66%  { background-color: var(--startColor); }
+  83%  { background-color: var(--flashColor); }
+  100%  { background-color: var(--startColor); }
+}
+
+@keyframes small-flash {
   0%   { background-color: var(--startColor); }
   25%  { background-color: var(--flashColor); }
   50%  { background-color: var(--startColor); }
